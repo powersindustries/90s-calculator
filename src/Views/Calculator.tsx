@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { formatDisplay, getAnswerAfterSpecialModifier, getAnswerAfterModifier, performCalculation } from "../Controllers/CalculatorHelpers";
+import { formatDisplay, getAnswerAfterSpecialModifier, getAnswerAfterModifier, performCalculation, getDisplayableAnswer } from "../Controllers/CalculatorHelpers";
 import CalculationState from "../Models/CalculationState";
 import ModifierTypes from "../Models/ModifierTypes";
 import MrcState from "../Models/MrcState";
@@ -170,7 +170,7 @@ function Calculator() {
                     {mrcValues.mMinus > 0 || mrcValues.mPlus > 0 ? "M" : ""}
                 </h4>
                 <h3 className="display-text">
-                    {calculation.value ? calculation.value : calculation.answer}
+                    { calculation.value ? calculation.value : getDisplayableAnswer(calculation.answer) }
                 </h3>
             </div>
 

@@ -75,3 +75,16 @@ export function getAnswerAfterSpecialModifier(inCalculation: CalculationState, i
             return inCalculation.value;
     }
 }
+
+
+// --------------------------------------
+// --------------------------------------
+export function getDisplayableAnswer(displayNumber: number) {
+    const displayNumberString: string = displayNumber.toString();
+    if (displayNumberString.length > 10) {
+        // Only display 6 decimal places.
+        return displayNumber.toExponential(6);
+    }
+
+    return displayNumber;
+}
