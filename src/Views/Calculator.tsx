@@ -1,30 +1,17 @@
-import React from "react";
 import { useState } from "react";
-import { formatDisplay, performCalculation, getAnswerAfterModifier, getAnswerAfterSpecialModifier } from "./CalculatorHelpers"
+import { formatDisplay, getAnswerAfterSpecialModifier, getAnswerAfterModifier, performCalculation } from "../Controllers/CalculatorHelpers";
+import CalculationState from "../Models/CalculationState";
+import ModifierTypes from "../Models/ModifierTypes";
+import MrcState from "../Models/MrcState";
 
 
-// --------------------------------------
-// Main class.
-// --------------------------------------
 function Calculator() {
 
-    let [calculation, setCalculation] = useState(
-        {
-            modifier: "",
-            value: 0,
-            answer: 0
-        }
-    );
+    let [calculation, setCalculation] = useState<CalculationState>(new CalculationState(ModifierTypes.NONE, 0, 0)  );
+    let [mrcValues, setMrcValues] = useState<MrcState>(new MrcState(0,0));
 
-    let [mrcValues, setMrcValues] = useState(
-        {
-            mPlus: 0,
-            mMinus: 0
-        }
-    );
-
-    function OnNumberClicked(inEvent) {
-        const number = inEvent.target.textContent;
+    function onNumberClicked(event: any) {
+        const number: number = event.target.textContent;
 
         setCalculation(
             {
@@ -36,8 +23,8 @@ function Calculator() {
         );
     }
 
-    function handleModifierClicked(inModifier) {
-        const newAnswer = formatDisplay(getAnswerAfterModifier(calculation, inModifier));
+    function onModifierClicked(inModifier: ModifierTypes) {
+        const newAnswer: number = formatDisplay(getAnswerAfterModifier(calculation, inModifier));
 
         setCalculation(
             {
@@ -49,8 +36,8 @@ function Calculator() {
         );
     }
 
-    function handleSpecialModifierClicked(inModifier) {
-        const newAnswer = getAnswerAfterSpecialModifier(calculation, inModifier);
+    function onSpecialModifierClicked(inModifier: ModifierTypes) {
+        const newAnswer: number = getAnswerAfterSpecialModifier(calculation, inModifier);
 
         setCalculation(
             {
@@ -62,7 +49,7 @@ function Calculator() {
         );
     }
 
-    function handleMMinusClicked(event) {
+    function onMMinusClicked() {
         if (calculation.value !== 0 || calculation.answer !== 0) {
             setMrcValues(
                 {
@@ -73,7 +60,7 @@ function Calculator() {
         }
     }
 
-    function handleMPlusClicked(event) {
+    function onMPlusClicked() {
         if (calculation.value !== 0 || calculation.answer !== 0) {
             setMrcValues(
                 {
@@ -84,9 +71,9 @@ function Calculator() {
         }
     }
 
-    function handleMRCClicked(event) {
+    function onMRCClicked() {
         // Both M values exist. Cycle between two.
-        const bBothMValuesExist = (mrcValues.mMinus !== 0 && mrcValues.mPlus !== 0);
+        const bBothMValuesExist: boolean = (mrcValues.mMinus !== 0 && mrcValues.mPlus !== 0);
         if (bBothMValuesExist) {
             if (mrcValues.mMinus !== calculation.value) {
                 setCalculation(
@@ -134,14 +121,14 @@ function Calculator() {
         }
     }
 
-    function handleSubmitClicked(event) {
+    function onSubmitClicked() {
         if (calculation.modifier && calculation.value) {
 
             // Maybe come back and add exception for divide by zero error
             setCalculation(
                 {
                     ...calculation,
-                    modifier: "",
+                    modifier: ModifierTypes.NONE,
                     value: 0,
                     answer: performCalculation(calculation.answer, calculation.value, calculation.modifier)
                 }
@@ -149,7 +136,7 @@ function Calculator() {
         }
     }
 
-    function handleClearClicked(event) {
+    function onClearClicked() {
 
         // Clear MRC if clear was clicked multiple times.
         if (calculation.value === 0 && calculation.answer === 0) {
@@ -164,7 +151,7 @@ function Calculator() {
         setCalculation(
             {
                 ...calculation,
-                modifier: "",
+                modifier: ModifierTypes.NONE,
                 value: 0,
                 answer: 0
             }
@@ -172,9 +159,6 @@ function Calculator() {
     }
 
 
-
-    // --------------------------------------
-    // --------------------------------------
     return (
 
         <div className="calculator">
@@ -214,102 +198,102 @@ function Calculator() {
 
                     <button
                         className="button-modifier"
-                        onClick={() => handleSpecialModifierClicked("plusminus")}>
+                        onClick={() => onSpecialModifierClicked(ModifierTypes.plusminus)}>
                         +/-
                     </button>
                     <button
                         className="button-modifier"
-                        onClick={() => handleSpecialModifierClicked("sqrt")}>
+                        onClick={() => onSpecialModifierClicked(ModifierTypes.sqrt)}>
                         &#8730;
                     </button>
                     <button
                         className="button-modifier"
-                        onClick={() => handleSpecialModifierClicked("percent")}>
+                        onClick={() => onSpecialModifierClicked(ModifierTypes.percent)}>
                         %
                     </button>
 
 
                     <button
                         className="button-modifier"
-                        onClick={handleMRCClicked}>
+                        onClick={onMRCClicked}>
                         MRC
                     </button>
                     <button
                         className="button-modifier"
-                        onClick={handleMMinusClicked}>
+                        onClick={onMMinusClicked}>
                         M-
                     </button>
                     <button
                         className="button-modifier"
-                        onClick={handleMPlusClicked}>
+                        onClick={onMPlusClicked}>
                         M+
                     </button>
 
 
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         7
                     </button>
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         8
                     </button>
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         9
                     </button>
 
 
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         4
                     </button>
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         5
                     </button>
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         6
                     </button>
 
 
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         1
                     </button>
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         2
                     </button>
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         3
                     </button>
 
 
                     <button
                         className="button-modifier"
-                        onClick={handleClearClicked}>
+                        onClick={onClearClicked}>
                         ON/C
                     </button>
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         0
                     </button>
                     <button
                         className="button-number"
-                        onClick={OnNumberClicked}>
+                        onClick={onNumberClicked}>
                         .
                     </button>
 
@@ -318,27 +302,27 @@ function Calculator() {
                 <div className="buttons-grid-right">
                     <button
                         className="button-modifier"
-                        onClick={() => handleModifierClicked("/")}>
+                        onClick={() => onModifierClicked(ModifierTypes.divide)}>
                         &#247;
                     </button>
                     <button
                         className="button-modifier"
-                        onClick={() => handleModifierClicked("x")}>
+                        onClick={() => onModifierClicked(ModifierTypes.multiply)}>
                         x
                     </button>
                     <button
                         className="button-modifier"
-                        onClick={() => handleModifierClicked("-")}>
+                        onClick={() => onModifierClicked(ModifierTypes.minus)}>
                         -
                     </button>
                     <button
                         className="button-modifier"
-                        onClick={() => handleModifierClicked("+")}>
+                        onClick={() => onModifierClicked(ModifierTypes.plus)}>
                         +
                     </button>
                     <button
                         className="button-submit"
-                        onClick={handleSubmitClicked}>
+                        onClick={onSubmitClicked}>
                         =
                     </button>
 

@@ -1,7 +1,11 @@
+import CalculationState from "../Models/CalculationState";
+import ModifierTypes from "../Models/ModifierTypes";
+
+
 // --------------------------------------
 // --------------------------------------
-export function formatDisplay(inValue) {
-    const inValueString = String(inValue);
+export function formatDisplay(inValue: number) {
+    const inValueString: string = inValue.toString();
     if (inValueString.length > 10) {
         return Number(inValueString.substring(0, 10));
     }
@@ -12,15 +16,15 @@ export function formatDisplay(inValue) {
 
 // --------------------------------------
 // --------------------------------------
-export function performCalculation(value1, value2, modifier) {
+export function performCalculation(value1: number, value2: number, modifier: ModifierTypes) {
     switch (modifier) {
-        case "+":
+        case ModifierTypes.plus:
             return value1 + value2;
-        case "/":
+        case ModifierTypes.divide:
             return value1 / value2;
-        case "x":
+        case ModifierTypes.multiply:
             return value1 * value2;
-        case "-":
+        case ModifierTypes.minus:
             return value1 - value2;
         default:
             console.error("Modifier (" + modifier + ") not found.");
@@ -31,14 +35,12 @@ export function performCalculation(value1, value2, modifier) {
 
 // --------------------------------------
 // --------------------------------------
-export function getAnswerAfterModifier(inCalculation, inModifier) {
+export function getAnswerAfterModifier(inCalculation: CalculationState, inModifier: ModifierTypes) {
     if (!inCalculation.value) {
         return inCalculation.answer;
-    }
-    else if (!inCalculation.answer) {
+    } else if (!inCalculation.answer) {
         return inCalculation.value;
-    }
-    else {
+    } else {
         return performCalculation(inCalculation.answer, inCalculation.value, inModifier);
     }
 }
@@ -46,29 +48,26 @@ export function getAnswerAfterModifier(inCalculation, inModifier) {
 
 // --------------------------------------
 // --------------------------------------
-export function getAnswerAfterSpecialModifier(inCalculation, inModifier) {
+export function getAnswerAfterSpecialModifier(inCalculation: CalculationState, inModifier: ModifierTypes) {
 
     switch (inModifier) {
-        case "plusminus":
+        case ModifierTypes.plusminus:
             if (inCalculation.value) {
                 return inCalculation.value * -1;
-            }
-            else {
+            } else {
                 return inCalculation.answer * -1;
             }
-        case "sqrt":
+        case ModifierTypes.sqrt:
             if (inCalculation.value) {
                 return Math.sqrt(inCalculation.value);
-            }
-            else {
+            } else {
                 return Math.sqrt(inCalculation.answer);
             }
-        case "percent":
+        case ModifierTypes.percent:
             if (inCalculation.value) {
                 const percentage = inCalculation.answer * (inCalculation.value * 0.01);
                 return performCalculation(inCalculation.answer, percentage, inCalculation.modifier);
-            }
-            else {
+            } else {
                 return 0;
             }
         default:
